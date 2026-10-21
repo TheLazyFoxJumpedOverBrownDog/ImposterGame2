@@ -32,6 +32,10 @@ else
                 npx --yes @fastly/compute-js-static-publish@latest --root-dir=./deploy/_site --output=./deploy/_app --kv-store-name="${PROJECT}-content" --name="${PROJECT}"
             fi
         fi
+        # the scaffolder's own install can fail if ~/.npmrc sets allow-scripts, so install here without the user npmrc
+        if [ ! -d './deploy/_app/node_modules/@fastly/js-compute' ]; then
+            NPM_CONFIG_USERCONFIG=/dev/null npm --prefix ./deploy/_app install || { printf '\nOops! Could not install app dependencies.. 🤬\n'; exit 1; }
+        fi
         # check for a service id and if not deploy the app
         service=$(grep '^service_id' ./deploy/_app/fastly.toml | cut -d= -f2-)
         size=${#service}

@@ -4,7 +4,7 @@
 
 /** @type {import('@fastly/compute-js-static-publish').StaticPublishRc} */
 const rc = {
-  kvStoreName: "InstantAura-ImposterGame1-content",
+  kvStoreName: "TheLazyFoxJumpedOverBrownDog-ImposterGame2-content",
   publishId: "default",
   defaultCollectionName: "live",
   staticPublisherWorkingDir: "./static-publisher",

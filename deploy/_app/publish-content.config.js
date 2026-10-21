@@ -24,7 +24,7 @@ const config = {
     allowedEncodings: [ 'br', 'gzip' ],
     spaFile: false,
     notFoundPageFile: "/404.html", 
-    autoExt: [],
+    autoExt: [".html",".htm"],
     autoIndex: ["index.html","index.htm"],
   },
 };
