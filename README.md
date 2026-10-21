@@ -73,7 +73,7 @@ Grab a Fastly API key from your account and add it to your GitHub repo:
   - _Role_: Engineer
   - _Scope_: Global (deselect the _Read-only access_ box)
   - _Access_: All services
-  - _Expiration_: Never expire
+  - _Expiration_: Never expire.
 - **Copy the token value into GitHub**
   - Back in your codespace, click into the textfield at the top of the editor and type `>` to access the command palette
   - Type `secret` and select **Codespaces: Manage user secrets**

@@ -121,6 +121,24 @@
 	<!-- Poki SDK include -->
 	<script src="./patch/poki/sdk-v2.js?//game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
 	<script>
+		// Offline fallback (added by mod): if Poki's CDN is blocked/unreachable,
+		// use a do-nothing PokiSDK so the game still boots.
+		if (!window.PokiSDK) {
+			window.PokiSDK = {
+				init: () => Promise.resolve(),
+				setDebug: () => {},
+				gameLoadingStart: () => {},
+				gameLoadingFinished: () => {},
+				gameplayStart: () => {},
+				gameplayStop: () => {},
+				commercialBreak: () => Promise.resolve(),
+				rewardedBreak: () => Promise.resolve(false),
+				shareableURL: () => Promise.resolve(''),
+				isAdBlocked: () => false,
+			};
+		}
+	</script>
+	<script>
 		window.addEventListener('keydown', ev => {
 			if (['ArrowDown', 'ArrowUp', ' '].includes(ev.key)) {
 				ev.preventDefault();
