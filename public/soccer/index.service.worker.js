@@ -3,7 +3,7 @@
 // that they need an Internet connection to run the project if desired.
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
-const CACHE_VERSION = "mod-select-v1"; // MOD: bump this (v2, v3...) every time you redeploy
+const CACHE_VERSION = "mod-v5"; // MOD: bump this (v2, v3...) every time you redeploy
 const CACHE_PREFIX = "SuperLiquidSocce-sw-cache-";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 const OFFLINE_URL = "index.offline.html";
