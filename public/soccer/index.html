@@ -179,7 +179,16 @@
 	<script type='text/javascript' src='index.js'></script>
 	<script type='text/javascript'>//<![CDATA[
 
-		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":13430320,"index.wasm":13789463},"focusCanvas":true,"gdnativeLibs":[],"serviceWorker":"index.service.worker.js"};
+		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":16136390,"index.wasm":13789463},"focusCanvas":true,"gdnativeLibs":[],"serviceWorker":"index.service.worker.js"};
+		// MOD: when a newer build's service worker takes over, reload once so the new game files load
+		if ('serviceWorker' in navigator) {
+			var modHadSW = !!navigator.serviceWorker.controller;
+			navigator.serviceWorker.addEventListener('controllerchange', function () {
+				if (modHadSW && !window.modReloaded) { window.modReloaded = true; location.reload(); }
+			});
+			// MOD: browsers rarely re-check the worker on their own -> ask for an update on every load
+			navigator.serviceWorker.getRegistration().then(function (r) { if (r) { r.update(); } });
+		}
 		var engine = new Engine(GODOT_CONFIG);
 
 		function startGameLoading() {

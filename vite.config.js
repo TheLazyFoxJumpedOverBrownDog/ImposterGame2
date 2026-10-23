@@ -1,4 +1,6 @@
 import { defineConfig } from "vite";
+import fs from "node:fs";
+import path from "node:path";
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ command, mode }) => {
@@ -24,6 +26,12 @@ export default defineConfig(async ({ command, mode }) => {
         name: "unity-br-middleware",
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
+            // only serve the Brotli version if a .br file actually exists
+            const urlPath = decodeURIComponent(req.url.split("?")[0]);
+            const hasBr = ["public", "."].some((dir) =>
+              fs.existsSync(path.join(dir, urlPath + ".br"))
+            );
+            if (!hasBr) return next();
             if (req.url.endsWith(".wasm")) {
               req.url += ".br";
               res.setHeader("Content-Encoding", "br");

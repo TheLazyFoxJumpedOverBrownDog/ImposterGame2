@@ -3,7 +3,7 @@
 // that they need an Internet connection to run the project if desired.
 // Incrementing CACHE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
-const CACHE_VERSION = "mod-v5"; // MOD: bump this (v2, v3...) every time you redeploy
+const CACHE_VERSION = "mod-v8"; // MOD: bump this (v2, v3...) every time you redeploy
 const CACHE_PREFIX = "SuperLiquidSocce-sw-cache-";
 const CACHE_NAME = CACHE_PREFIX + CACHE_VERSION;
 const OFFLINE_URL = "index.offline.html";
@@ -14,7 +14,9 @@ const CACHABLE_FILES = ["index.wasm","index.pck"];
 const FULL_CACHE = CACHED_FILES.concat(CACHABLE_FILES);
 
 self.addEventListener("install", (event) => {
-	event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CACHED_FILES)));
+	self.skipWaiting(); // MOD: new build takes over right away (no waiting for every tab to close)
+	// MOD: cache: 'reload' = always take the server's copy, never an old one from the browser's HTTP cache
+	event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(CACHED_FILES.map(f => new Request(f, { cache: 'reload' })))));
 });
 
 self.addEventListener("activate", (event) => {
@@ -25,17 +27,14 @@ self.addEventListener("activate", (event) => {
 		}).then(function() {
 			// Enable navigation preload if available.
 			return ("navigationPreload" in self.registration) ? self.registration.navigationPreload.enable() : Promise.resolve();
-		})
+		}).then(() => self.clients.claim()) // MOD: control open pages immediately
 	);
 });
 
 async function fetchAndCache(event, cache, isCachable) {
-	// Use the preloaded response, if it's there
-	let response = await event.preloadResponse;
-	if (!response) {
-		// Or, go over network.
-		response = await self.fetch(event.request);
-	}
+	// MOD: always revalidate with the server (no stale HTTP-cache copies, no navigation preload)
+	const req = event.request.mode === "navigate" ? event.request.url : event.request;
+	let response = await self.fetch(req, { cache: "no-cache" });
 	if (isCachable) {
 		// And update the cache
 		cache.put(event.request, response.clone());
